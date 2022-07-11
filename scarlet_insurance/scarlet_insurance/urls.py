@@ -30,6 +30,7 @@ urlpatterns = [
     path('create-appointment/', AppointmentView.as_view(), name = 'create-appointment'),
     path('ajax/load-specialties/', load_specialties, name='ajax_load_specialties'),
     path('ajax/load-doctors/', load_doctors, name='ajax_load_doctors'),
+    path("api/", include('homepage.api.urls')),
     
 
 

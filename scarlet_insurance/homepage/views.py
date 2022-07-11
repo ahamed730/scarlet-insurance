@@ -11,12 +11,12 @@ from django.http import HttpResponseRedirect
 from datetime import datetime as dt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
+from django.core.exceptions import ValidationError
 
 
 
 # Create your views here.
 class HomeAV(TemplateView):
-    print("yo")
     template_name = 'homepage/home.html'
 
 class DoctorRegistrationView(CreateView):
@@ -46,6 +46,8 @@ class PatientRegistrationView(CreateView):
         patient.is_active = True
         patient.save()
         return super().form_valid(form)
+    
+
 
 class AppointmentView(LoginRequiredMixin, FormView):
     login_url = reverse_lazy('login')

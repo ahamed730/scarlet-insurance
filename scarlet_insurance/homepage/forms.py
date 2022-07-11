@@ -33,6 +33,7 @@ class DoctorRegistrationForm(forms.ModelForm):
             raise forms.ValidationError(
                 "passwords don't match"
             )
+        return cleaned_data
 
 class PatientRegistrationForm(forms.ModelForm):
 
@@ -47,7 +48,7 @@ class PatientRegistrationForm(forms.ModelForm):
     }))
     class Meta:
         model = Patient
-        fields = ["first_name", 'last_name', 'phone_number', 'email', 'password', 'is_active']
+        fields = ["first_name", 'last_name', 'phone_number', 'email', 'password', 'confirm_password','is_active']
     
     def __init__(self, *args, **kwargs):
         super(PatientRegistrationForm, self).__init__(*args, **kwargs)
@@ -61,8 +62,9 @@ class PatientRegistrationForm(forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError(
-                "passwords don't match"
+               " Please make sure your passwords match"
             )
+        
 
 
 class AppointmentForm(forms.ModelForm):

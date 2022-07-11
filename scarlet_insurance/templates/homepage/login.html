@@ -1,42 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insurance</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-<body>
-    <!-- MultiStep Form -->
-<div class="container-fluid" style="height: 100%;" id="grad1">
-    <div class="row justify-content-center mt-0">
-        <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
-            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
-                <h2><strong>Login in</strong></h2>
-                <div class="row">
-                    <div class="col-md-12 mx-0">
-                        <form method="POST" id="msform">
-                            {% csrf_token %}
-                            <!-- progressbar -->
-                            <fieldset>
-                                <div class="form-card">
-                                     {{form.as_p}}
-                            </fieldset>
-                            <input type="submit" class="next action-button" value="Login" />     
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <!-- ======= Appointment Section ======= -->
+ {% extends 'homepage/base.html' %}
+ {% block content %}
+ <style>
+
+input[type=email], input[type=password] {   
+        width: 100%;   
+        margin: 8px 0;  
+        padding: 12px 20px;   
+        display: inline-block;   
+        border: 2px solid rgb(8, 8, 8);   
+        box-sizing: border-box;   
+    }
+    label {   
+        text-align: center;
+    } 
+
+ </style>
+ <section id="appointment" class="appointment section-bg" style="width:50%; margin-left: 25%; margin-right: 25%;">
+    <div class="container">
+
+      <div class="section-title">
+        <br>
+        <br>
+        <br>
+        <h2>Login</h2>
+       
+      </div>
+
+      <form method="POST" id ="appointment-form"  class="php-email-form" >
+        {% csrf_token %}
+        <!-- <div class="row"> -->
+          <div class="col-md-12 form-group mt-3">
+            <!-- <label for="username"> Please enter email</label> -->
+            <input type="text" name="username" class="form-control datepicker" id="id_username" placeholder="email" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+        
+          </div>
+          <div class="col-md-12 form-group mt-3">
+            <!-- <label for="password"> Please enter password</label> -->
+            <input type="password" name="password" class="form-control datepicker"  placeholder="password" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+            
+          <!-- </div> -->
+          
+                <br>
+                <br>
+        <div class="text-center"><button type="submit" value="Login">Login</button></div>
+     <a style='margin-right: 5%;'  href="{% url 'patient-register' %}">Patient Registration</a>
+     <a style='margin-left: 63%;'  href="{% url 'doctor-register' %}">Doctor Registration</a>
+      </form>
     </div>
-</div>
-<script src="{% static 'app.js' %}"></script>
-</body>
-</html>
-    
+  </section>
+  {% endblock %}

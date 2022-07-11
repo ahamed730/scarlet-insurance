@@ -127,15 +127,15 @@ class DoctorInformation(models.Model):
     doctor = models.ForeignKey(Doctor, null=True, on_delete=models.CASCADE, related_name="doctorinfo")
 
     def __str__(self):
-        return (str(self.doctor )+ " " + self.specialty + " " + self.location)
+        return (str(self.doctor ) + " " + self.specialty + " " + self.location)
 
     class Meta:
         verbose_name = ("Doctor Information")
         verbose_name_plural = ("Doctor Information")
 
 class Appointment(models.Model):
-    provider = models.ForeignKey(DoctorInformation, on_delete=models.CASCADE, related_name="appointment", null= True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="Patient", null = True)
+    provider = models.ForeignKey(DoctorInformation, on_delete=models.CASCADE, related_name="appointment")
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="Patient")
     time = models.DateTimeField(null=True)
     reason_for_appointment = models.TextField(max_length=3000, blank=True, null=True)
 
