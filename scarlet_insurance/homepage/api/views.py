@@ -18,11 +18,19 @@ class AppointmentAV(viewsets.ModelViewSet):
     serializer_class = AppointmentSerializer
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            patient = Patient.objects.get(email=self.request.user.email)
-        else:
-            patient = Patient.objects.get(email=self.request.GET.get('email'))
-        return Appointment.objects.filter(patient = patient)
+        try:
+            if self.request.user.is_authenticated:
+                patient = Patient.objects.get(email=self.request.user.email)
+            else:
+                patient = Patient.objects.get(email=self.request.GET.get('email'))
+            return Appointment.objects.filter(patient = patient)
+        except:
+            if self.request.user.is_authenticated:
+                doctor = Doctor.objects.get(email=self.request.user.email)
+            else:
+                doctor = Doctor.objects.get(email=self.request.GET.get('email'))
+            return Appointment.objects.filter(provider__doctor=doctor)
+
 
     def create(self, request, *args, **kwargs):
         try:

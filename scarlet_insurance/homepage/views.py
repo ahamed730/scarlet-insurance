@@ -17,6 +17,7 @@ from django.core.exceptions import ValidationError
 
 # Create your views here.
 class HomeAV(TemplateView):
+    doctor = Doctor.objects.first()
     template_name = 'homepage/home.html'
 
 class DoctorRegistrationView(CreateView):
