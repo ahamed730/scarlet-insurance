@@ -1,0 +1,70 @@
+ <!-- ======= Appointment Section ======= -->
+ {% extends 'homepage/base.html' %}
+ {% block content %}
+ <section id="appointment" class="appointment section-bg">
+    <div class="container">
+
+      <div class="section-title">
+        <br>
+        <br>
+        <br>
+        <h2>Doctor Registration</h2>
+
+      </div>
+
+      <form method="POST" id ="appointment-form"  class="php-email-form" >
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-3 form-group mt-3">
+            <label for="first_name"> Please enter first name</label>
+            <input required type="text" name="first_name" class="form-control datepicker"  placeholder="First Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="last_name"> Please enter last name</label>
+            <input required type="text" name="last_name" class="form-control datepicker"  placeholder="Last Name" data-rule="minlen:4"  data-msg="Please enter at least 4 chars">
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="location"> Please enter location</label>
+            <select name="location" class="form-control datepicker" required name="location"  data-rule="minlen:4"  data-msg="Please enter at least 4 chars">
+              <option disabled value="">Location</option>
+              <option value="New York, NY">New York, NY</option>
+              <option value="Brooklyn, NY">Brooklyn, NY</option>  
+              <option value="Jersey City, NJ">Jersey City, NJ</option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="specialty"> Please select specialty</label>
+            <select name="specialty" class="form-control datepicker" required name="specialty"  data-rule="minlen:4"  data-msg="Please enter at least 4 chars">
+              <option value="" disabled> Specialty </option>  
+              <option value="Cardiology"> Cardiology </option>
+                <option value="Neurology">  Neurology </option>
+                <option value="Pathology">  Pathology </option>
+                <option value="Ophthalmology"> Ophthalmology </option>
+                <option value="Internal Medicine"> Internal Medicine </option>
+                <option value="Dermatology"> Dermatology </option>
+            </select>
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="phone_number"> Please enter phone number</label>
+            <input required type="tel" name="phone_number" class="form-control" placeholder="Phone Number" data-rule="minlen:4"  data-msg="Please enter at least 4 chars"> 
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="email">Please enter email</label>
+            <input required type="email" name="email" class="form-control"  class="form-control" placeholder="Email Address">
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="password">Please enter password</label>
+            <input required type="password" name="password" class="form-control"  placeholder="Password">
+          </div>
+          <div class="col-md-3 form-group mt-3">
+            <label for="confirm_password">Please enter password again</label>
+            <input required type="password" name="confirm_password" class="form-control" placeholder="Confirm Password">
+          </div>
+        </div>
+        <br>
+        <div class="text-center"><button type="submit">Register</button></div>
+        {{form.non_field_errors}}
+      </form>
+    </div>
+  </section>
+  {% endblock %}
