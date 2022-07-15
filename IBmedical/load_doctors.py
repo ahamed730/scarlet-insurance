@@ -47,10 +47,12 @@ def create_patient():
 
 # create_patient()
 # create_docs()
-appointment = Appointment.objects.get(pk=29)
-appointment.reason_for_appointment = "my chest hurts"
-appointment.save()
-
+# appointment = Appointment.objects.get(pk=29)
+# appointment.reason_for_appointment = "my chest hurts"
+# appointment.save()
+doctor = Doctor.objects.get(first_name="Cheryl", last_name="Lynch")
+provider = DoctorInformation.objects.get(specialty="Cardiology", doctor=doctor, location="Jersey City, NJ")
+print(provider)
 
     
 

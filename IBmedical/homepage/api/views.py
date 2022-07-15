@@ -88,8 +88,19 @@ def appointments(request):
             Appointment.objects.create(provider=provider, patient=patient, time=time, reason_for_appointment=reason)
             return Response(status.HTTP_201_CREATED)
 
+        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "locations":
+            specialty = request.POST.get('department')
+            doctor_info = DoctorInformation.objects.filter(specialty=specialty)
+            locations = set([doc_info.location for doc_info in doctor_info])
+            return Response({'locations': locations})
 
-
+        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "doctors":
+            location = request.POST.get('location')
+            specialty = request.POST.get('department')
+            doctor_information = DoctorInformation.objects.all().filter(location = location, specialty = specialty)
+            doctors = [docinfo.doctor for docinfo in doctor_information]
+            doctor_names = set([("Dr." + " " + doctor.first_name + ' ' + doctor.last_name) for doctor in doctors])
+            return Response({'doctors': doctor_names})
 
 
 
