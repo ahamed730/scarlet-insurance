@@ -51,7 +51,7 @@
 
       <a href= {% url "create-appointment" %} class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a>
       {% if user.is_authenticated %}
-      <a href= {% url "logout" %} style="margin-left: 5%" id ="username"><span id ="account_type" class="d-none d-md-inline">{{user.type_of_account|title}}</span> <span> </span> <span id ="first_name" class="d-none d-md-inline">{{user.first_name|title}}</span> <span>, Logout </span></a>
+      <a href= {% url "logout" %} style="margin-left: 5%" id ="username"><span id ="account_type" class="d-none d-md-inline">{{user.type_of_account|title}}</span> <span> </span> <span id ="first_name" class="d-none d-md-inline">{{user.first_name|title}}</span> <span> </span> <span id ="last_name" class="d-none d-md-inline">{{user.last_name|title}}</span> <span>, Logout </span></a>
       {% else %}
       <a href= {% url "login" %} style="margin-left: 5%" ><span class="d-none d-md-inline">Login</span></a>
       {% endif %}
@@ -76,17 +76,18 @@
 
   <script>
       function preSendhandler(event) {
-        var name = $("#first_name").prop('innerText');
+        var first_name = $("#first_name").text();
+        var last_name = $("#last_name").text();
         var account_type = $("#account_type").text();
-        console.log(account_type == "Patient");
         event.data.context.skills['main skill'] = event.data.context.skills['main skill'] || { user_defined: {} };
         event.data.context.skills['main skill'].user_defined.account_type = account_type; 
-        event.data.context.skills['main skill'].user_defined.first_name = name; }
+        event.data.context.skills['main skill'].user_defined.first_name = first_name; 
+        event.data.context.skills['main skill'].user_defined.last_name = last_name;}
     window.watsonAssistantChatOptions = {
-        integrationID: "d040bfbf-d959-407a-bef7-c5e04ea63c62", // The ID of this integration.
+        integrationID: "670f82c4-a95b-4fd8-97ae-23eb515838bb", // The ID of this integration.
         region: "dev", // The region your integration is hosted in.
-        serviceInstanceID: "00000000-0000-0000-1657-579585697637", // The ID of your service instance.
-        cloudPrivateHostURL: "https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations", // The integration service URL for your provisioned instance.
+        serviceInstanceID: "00000000-0000-0000-1657-892147037114", // The ID of your service instance.
+        cloudPrivateHostURL: "https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations",
         onLoad: function(instance) { 
           instance.on({ type: "pre:send", handler: preSendhandler });
           instance.render(); 

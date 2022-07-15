@@ -127,7 +127,7 @@ class DoctorInformation(models.Model):
     doctor = models.ForeignKey(Doctor, null=True, on_delete=models.CASCADE, related_name="doctorinfo")
 
     def __str__(self):
-        return (str(self.doctor)) + " " + self.specialty
+        return (str(self.doctor)) + " from " + self.specialty
 
     class Meta:
         verbose_name = ("Doctor Information")

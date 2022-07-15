@@ -8,7 +8,7 @@ class AccountAdmin(UserAdmin):
     filter_horizontal = ()
     list_filter = (["type_of_account"])
     fieldsets = ()
-    readonly_fields = ('type_of_account', 'last_login', 'date_joined')
+    readonly_fields = ('last_login', 'date_joined')
     ordering = ('-last_login',)
 
 class DoctorInformationAdmin(admin.ModelAdmin):

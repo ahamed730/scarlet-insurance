@@ -9,6 +9,8 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from dateutil import parser
+import humanize
+from datetime import datetime
 
 
 
@@ -32,10 +34,11 @@ class AppointmentAV(viewsets.ModelViewSet):
 @api_view(['POST'])
 def appointments(request):
     if request.method == "POST":
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        print(request.data)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "all-appointments":
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "all-appointments":
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointments =  Appointment.objects.all().filter(patient=patient).order_by('time')
             serializer = AppointmentSerializer(appointments, many=True)
@@ -47,60 +50,85 @@ def appointments(request):
                 }
             return Response(serializer.data)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "appointment-details":
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-details":
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointments =  Appointment.objects.all().filter(patient=patient).order_by('time')
             serializer = AppointmentSerializer(appointments, many=True)
             try:
                 data = serializer.data[0]
+                data['time'] = parser.parse(data['time']).strftime("%B %d, %Y @ %I:%M %p")
             except:
                 data = {
                     'appointments' : 'none'
                 }
             return Response(data)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "appointment-delete":
-            time = parser.parse(request.POST.get('time'))
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-delete":
+            time = parser.parse(request.data.get('time'))
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointment =  Appointment.objects.get(patient=patient, time = time)
             appointment.delete()
             return Response(status.HTTP_204_NO_CONTENT)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "appointment-update":
-            time = parser.parse(request.POST.get('time'))
-            new_time = parser.parse(request.POST.get('new_time'))
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-update":
+            time = parser.parse(request.data.get('time').replace('@', ' '))
+            new_time = parser.parse(request.data.get('new_time'))
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointment =  Appointment.objects.get(patient=patient, time = time)
             appointment.time = new_time
             appointment.save()
-            return Response(status.HTTP_202_ACCEPTED)
+            return Response({'status': 'succeeded'}, status.HTTP_202_ACCEPTED)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "appointment-create":
-            time = parser.parse(request.POST.get('time'))
-            location = request.POST.get('location')
-            specialty = request.POST.get('department')
-            doctor = request.POST.get('doctor')
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-create":
+            time = parser.parse(request.data.get('time'))
+            location = request.data.get('location')
+            specialty = request.data.get('department')
+            doctor = request.data.get('doctor')
             doctor_first_name, doctor_last_name = doctor.split()[0], doctor.split()[1]
             doctor = Doctor.objects.get(first_name=doctor_first_name, last_name=doctor_last_name)
-            reason = request.POST.get('reason_for_appointment')
+            reason = request.data.get('reason_for_appointment')
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             provider = DoctorInformation.objects.get(specialty=specialty, doctor=doctor, location=location)
             Appointment.objects.create(provider=provider, patient=patient, time=time, reason_for_appointment=reason)
             return Response(status.HTTP_201_CREATED)
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "locations":
-            specialty = request.POST.get('department')
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "locations":
+            specialty = request.data.get('department')
             doctor_info = DoctorInformation.objects.filter(specialty=specialty)
             locations = set([doc_info.location for doc_info in doctor_info])
             return Response({'locations': locations})
 
-        if request.POST.get('account_type') == 'Patient' and request.POST.get('intent') == "doctors":
-            location = request.POST.get('location')
-            specialty = request.POST.get('department')
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "doctors":
+            location = request.data.get('location')
+            specialty = request.data.get('department')
             doctor_information = DoctorInformation.objects.all().filter(location = location, specialty = specialty)
             doctors = [docinfo.doctor for docinfo in doctor_information]
             doctor_names = set([("Dr." + " " + doctor.first_name + ' ' + doctor.last_name) for doctor in doctors])
             return Response({'doctors': doctor_names})
+
+        if request.data.get('account_type') == 'Doctor' and request.data.get('intent') == "appointment-details":
+            doctor = Doctor.objects.get(first_name = first_name, last_name = last_name)
+            appointments = Appointment.objects.all().filter(provider__doctor=doctor).order_by('time')
+            serializer = AppointmentSerializer(appointments, many=True)
+            try:
+                data = serializer.data[0]
+                data['time'] = parser.parse(data['time']).strftime("%B %d, %Y @ %I:%M %p")
+            except:
+                data = {
+                    'appointments' : 'none'
+                }
+            return Response(data)
+        
+        if request.data.get('account_type') == 'Doctor' and request.data.get('intent') == "appointment-update":
+            print(request.data)
+            time = parser.parse(request.data.get('time'))
+            new_time = parser.parse(request.data.get('new_time'))
+            doctor = Doctor.objects.get(first_name = first_name, last_name = last_name)
+            appointment =  Appointment.objects.all().filter(provider__doctor=doctor, time = time)[0]
+            appointment.time = new_time
+            appointment.save()
+            return Response(status.HTTP_202_ACCEPTED)
+        
 
 
 
