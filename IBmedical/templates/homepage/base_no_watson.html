@@ -73,33 +73,6 @@
   <script src= {% static "assets/vendor/swiper/swiper-bundle.min.js" %} ></script>
 
   <!-- Template Main JS File -->
-  
-  
-
-  <script>
-    var first_name = $( "#username" ).text();
-    console.log( first_name)
-    function preSendhandler(event) {
-      event.data.context.skills['main skill'] = event.data.context.skills['main skill'] || { user_defined: {} };
-      event.data.context.skills['main skill'].user_defined.username = first_name;
-      event.data.context.skills['main skill'].user_defined.party= true;
-    }
-    window.watsonAssistantChatOptions = {
-        integrationID: "0de33b50-a9b9-4ef8-b3a7-30e1a1020a53", // The ID of this integration.
-        region: "dev", // The region your integration is hosted in.
-        serviceInstanceID: "00000000-0000-0000-1657-579585697637", // The ID of your service instance.
-        cloudPrivateHostURL: "https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations", // The integration service URL for your provisioned instance.
-        onLoad: function(instance) { 
-          instance.on({ type: "pre:send", handler: preSendhandler });
-          instance.render(); 
-        }
-      };
-    setTimeout(function(){
-      const t=document.createElement('script');
-      t.src="https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations/static/webchat/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js"
-      document.head.appendChild(t);
-    });
-  </script>
 
   <script src={% static "assets/js/main.js" %}></script>
 </body>

@@ -11,7 +11,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ibmedical.settings")
 django.setup()
 
 
-from homepage.models import Doctor, DoctorInformation, Patient
+from homepage.models import Doctor, DoctorInformation, Patient, Appointment
 
 
 
@@ -45,8 +45,12 @@ def create_patient():
         Patient.objects.create(first_name=first_name, last_name=last_name, phone_number=phone_number, email=email, password=password,username=username)
 
 
-create_patient()
-create_docs()
+# create_patient()
+# create_docs()
+appointment = Appointment.objects.get(pk=29)
+appointment.reason_for_appointment = "my chest hurts"
+appointment.save()
+
 
     
 

@@ -29,6 +29,7 @@
 
   <!-- Template Main CSS File -->
   <link href= {% static "assets/css/style.css" %} rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -50,7 +51,7 @@
 
       <a href= {% url "create-appointment" %} class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a>
       {% if user.is_authenticated %}
-      <a href= {% url "logout" %} style="margin-left: 5%" id ="username" ><span class="d-none d-md-inline">{{user.first_name}}, Logout </span></a>
+      <a href= {% url "logout" %} style="margin-left: 5%" id ="username"><span id ="account_type" class="d-none d-md-inline">{{user.type_of_account|title}}</span> <span> </span> <span id ="first_name" class="d-none d-md-inline">{{user.first_name|title}}</span> <span>, Logout </span></a>
       {% else %}
       <a href= {% url "login" %} style="margin-left: 5%" ><span class="d-none d-md-inline">Login</span></a>
       {% endif %}
@@ -74,12 +75,15 @@
   <!-- Template Main JS File -->
 
   <script>
-    function preSendhandler(event) {
-      event.data.context.skills['main skill'] = event.data.context.skills['main skill'] || { user_defined: {} };
-      event.data.context.skills['main skill'].user_defined.party_time = true;
-    }
+      function preSendhandler(event) {
+        var name = $("#first_name").prop('innerText');
+        var account_type = $("#account_type").text();
+        console.log(account_type == "Patient");
+        event.data.context.skills['main skill'] = event.data.context.skills['main skill'] || { user_defined: {} };
+        event.data.context.skills['main skill'].user_defined.account_type = account_type; 
+        event.data.context.skills['main skill'].user_defined.first_name = name; }
     window.watsonAssistantChatOptions = {
-        integrationID: "0de33b50-a9b9-4ef8-b3a7-30e1a1020a53", // The ID of this integration.
+        integrationID: "d040bfbf-d959-407a-bef7-c5e04ea63c62", // The ID of this integration.
         region: "dev", // The region your integration is hosted in.
         serviceInstanceID: "00000000-0000-0000-1657-579585697637", // The ID of your service instance.
         cloudPrivateHostURL: "https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations", // The integration service URL for your provisioned instance.

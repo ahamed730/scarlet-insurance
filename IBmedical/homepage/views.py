@@ -16,7 +16,8 @@ from django.core.exceptions import ValidationError
 
 
 # Create your views here.
-class HomeAV(TemplateView):
+class HomeAV(LoginRequiredMixin, TemplateView):
+    login_url = reverse_lazy('login')
     template_name = 'homepage/home.html'
 
 class DoctorRegistrationView(CreateView):
