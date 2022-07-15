@@ -17,7 +17,7 @@ class DoctorInformationAdmin(admin.ModelAdmin):
 
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('provider', "patient", 'time', 'reason_for_appointment')
-    list_filter = ('provider', "patient", 'time', 'reason_for_appointment')
+    list_filter = ("patient", 'time')
 
 
 
