@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>IB Medical</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href= {% static "assets/img/favicon.png" %} rel="icon">
+  <link href= {% static "assets/img/apple-touch-icon.png" %} rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href= {% static "assets/vendor/animate.css/animate.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/bootstrap/css/bootstrap.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/bootstrap-icons/bootstrap-icons.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/boxicons/css/boxicons.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/fontawesome-free/css/all.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/glightbox/css/glightbox.min.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/remixicon/remixicon.css" %} rel="stylesheet">
+  <link href= {% static "assets/vendor/swiper/swiper-bundle.min.css" %} rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href= {% static "assets/css/style.css" %} rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ======= Top Bar ======= -->
+  <div id="topbar" class="d-flex align-items-center fixed-top">
+    <div class="container d-flex justify-content-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope"></i> <a href="mailto:ahmedhamed@ibm.com">contact@Ibmedical.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href={% url "home-view" %}>Ibmedical</a></h1>
+
+      <a href= {% url "create-appointment" %} class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a>
+      {% if user.is_authenticated %}
+      <a href= {% url "logout" %} style="margin-left: 5%" id ="username"><span id ="account_type" class="d-none d-md-inline">{{user.type_of_account|title}}</span> <span> </span> <span id ="first_name" class="d-none d-md-inline">{{user.first_name|title}}</span> <span> </span> <span id ="last_name" class="d-none d-md-inline">{{user.last_name|title}}</span> <span>, Logout </span></a>
+      {% else %}
+      <a href= {% url "login" %} style="margin-left: 5%" ><span class="d-none d-md-inline">Login</span></a>
+      {% endif %}
+
+      
+
+    </div>
+  </header><!-- End Header -->
+            {% block content %}
+
+            {% endblock %}
+  
+
+   
+  <script src= {% static "assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %} ></script>
+  <script src= {% static "assets/vendor/glightbox/js/glightbox.min.js" %} ></script>
+  <script src= {% static "assets/vendor/php-email-form/validate.js" %} ></script>
+  <script src= {% static "assets/vendor/purecounter/purecounter.js" %} ></script>
+  <script src= {% static "assets/vendor/swiper/swiper-bundle.min.js" %} ></script>
+
+  <!-- Template Main JS File -->
+
+  <script>
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    var updated_appointment_date = ""
+    var proxy_instance = ""
+
+    const sendObject = {
+  "input": {
+    "message_type": "text",
+    "text": "get human agent"
+  }
+};
+const sendOptions = {
+  "silent": true
+}
+
+      function calendar(event) {
+        const inputElement = document.createElement('input');
+        inputElement.setAttribute('type', 'datetime-local');
+        inputElement.setAttribute('style', 'background-color: #f4f4f4;')
+        inputElement.setAttribute('id', 'watson_calendar')
+        event.data.element.appendChild(inputElement);
+      }
+
+      function calendarResponseHandler(event) {
+        const { message } = event.data;
+        switch (message.user_defined.calendar) {
+          case 'calendar_on':
+          calendar(event);
+        }
+      }
+
+      async function calendarRendered(event) {
+        await delay(3000);
+        try {
+          document.getElementById("watson_calendar").addEventListener("change", function() {
+            updated_appointment_date = new Date ($("#watson_calendar").val()).toLocaleString('default', { month: 'long', hour12:true, year:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" })
+            proxy_instance.send(sendObject, sendOptions)
+      }
+    )
+        }
+        catch(error){
+
+        }
+      
+
+  }
+    
+
+      function calendarRenderedResponseHandler(event) {
+            calendarRendered(event);
+        }
+
+      function preSendhandler(event) {
+        var first_name = $("#first_name").text();
+        var last_name = $("#last_name").text();
+        var account_type = $("#account_type").text();
+        event.data.context.skills['main skill'] = event.data.context.skills['main skill'] || { user_defined: {} };
+        event.data.context.skills['main skill'].user_defined.account_type = account_type; 
+        event.data.context.skills['main skill'].user_defined.first_name = first_name; 
+        event.data.context.skills['main skill'].user_defined.last_name = last_name;
+        if (updated_appointment_date.length > 0){
+          event.data.context.skills['main skill'].user_defined.updated_appointment_date = updated_appointment_date;
+        }                                                                       
+      }
+    window.watsonAssistantChatOptions = {
+        integrationID: "670f82c4-a95b-4fd8-97ae-23eb515838bb", // The ID of this integration.
+        region: "dev", // The region your integration is hosted in.
+        serviceInstanceID: "00000000-0000-0000-1657-892147037114", // The ID of your service instance.
+        cloudPrivateHostURL: "https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations",
+        carbonTheme: "g10",
+        onLoad: function(instance) { 
+          proxy_instance = instance;
+          instance.on({ type: "pre:send", handler: preSendhandler });
+          instance.on({ type: 'customResponse', handler: calendarResponseHandler });
+          instance.on({ type: 'receive', handler: calendarRenderedResponseHandler });
+          instance.render(); 
+        }
+      };
+    setTimeout(function(){
+      const t=document.createElement('script');
+      t.src="https://cpd-cpd-instance.itzroks-662001vacx-8cyyjo-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud/assistant/cpd-instance-wa/integrations/static/webchat/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js"
+      document.head.appendChild(t);
+    });
+  </script>
+
+  <script src={% static "assets/js/main.js" %}></script>
+</body>
+
+</html>

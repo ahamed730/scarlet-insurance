@@ -90,6 +90,7 @@ def appointments(request):
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             provider = DoctorInformation.objects.get(specialty=specialty, doctor=doctor, location=location)
             Appointment.objects.create(provider=provider, patient=patient, time=time, reason_for_appointment=reason)
+            appointment = Appointment.objects.get(provider=provider, patient=patient, time=time)
             return Response(status.HTTP_201_CREATED)
 
         if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "locations":
@@ -97,6 +98,30 @@ def appointments(request):
             doctor_info = DoctorInformation.objects.filter(specialty=specialty)
             locations = set([doc_info.location for doc_info in doctor_info])
             return Response({'locations': locations})
+        
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "locations-options":
+            specialty = request.data.get('department')
+            doctor_info = DoctorInformation.objects.filter(specialty=specialty)
+            locations = set([doc_info.location for doc_info in doctor_info])
+            locations_options = [{
+          "label": location,
+          "value": {
+            "input": {
+              "text": location
+            }
+          }
+        } for location in locations]
+            location_option_object = {
+  "arr": [
+    {
+      "title": "Where would you like to book your appointment",
+      "options": locations_options,
+      "description": "",
+      "response_type": "option"
+    }
+  ]
+}
+            return Response(location_option_object)
 
         if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "doctors":
             location = request.data.get('location')
@@ -105,6 +130,34 @@ def appointments(request):
             doctors = [docinfo.doctor for docinfo in doctor_information]
             doctor_names = set([("Dr." + " " + doctor.first_name + ' ' + doctor.last_name) for doctor in doctors])
             return Response({'doctors': doctor_names})
+        
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "doctors-options":
+            location = request.data.get('location')
+            specialty = request.data.get('department')
+            doctor_information = DoctorInformation.objects.all().filter(location = location, specialty = specialty)
+            doctors = [docinfo.doctor for docinfo in doctor_information]
+            doctor_names = set([("Dr." + " " + doctor.first_name + ' ' + doctor.last_name) for doctor in doctors])
+            doctors_options = [{
+          "label": doctor,
+          "value": {
+            "input": {
+              "text": doctor
+            }
+          }
+        } for doctor in doctor_names]
+            print(doctors_options)
+            doctor_option_object = {
+  "arr": [
+    {
+      "title": "Please select an available doctor below?",
+      "options": doctors_options,
+      "description": "",
+      "response_type": "option"
+    }
+  ]
+}
+            print(doctor_option_object)
+            return Response(doctor_option_object)
 
         if request.data.get('account_type') == 'Doctor' and request.data.get('intent') == "appointment-details":
             doctor = Doctor.objects.get(first_name = first_name, last_name = last_name)
