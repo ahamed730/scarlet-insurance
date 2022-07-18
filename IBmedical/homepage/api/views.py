@@ -50,6 +50,34 @@ def appointments(request):
                 }
             return Response(serializer.data)
 
+        if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "all-appointments-options":
+            patient = Patient.objects.get(first_name = first_name, last_name = last_name)
+            appointments =  Appointment.objects.all().filter(patient=patient).order_by('time')
+            appointments = AppointmentSerializer(appointments, many=True)
+            appointments = appointments.data[:]
+            for appointment in appointments:
+                print(appointment)
+            appointment_options = [{
+          "label": (appointment.get('provider'),parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p")),
+          "value": {
+            "input": {
+              "text": (appointment.get('provider'),parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p"))
+            }
+          }
+        } for appointment in appointments]
+            appointment_option_object = {
+  "arr": [
+    {
+      "title": "Which appointment would you like to cancel?",
+      "options": appointment_options,
+      "description": "",
+      "response_type": "option"
+    }
+  ]
+}
+
+            return Response(appointment_option_object)
+
         if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-details":
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointments =  Appointment.objects.all().filter(patient=patient).order_by('time')
