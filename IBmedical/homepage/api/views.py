@@ -58,10 +58,10 @@ def appointments(request):
             for appointment in appointments:
                 print(appointment)
             appointment_options = [{
-          "label": (appointment.get('provider'),parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p")),
+          "label": appointment.get('provider') + " " + parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p"),
           "value": {
             "input": {
-              "text": (appointment.get('provider'),parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p"))
+              "text": appointment.get('provider') + " " + parser.parse(appointment.get('time')).strftime("%B %d, %Y @ %I:%M %p")
             }
           }
         } for appointment in appointments]
@@ -96,7 +96,7 @@ def appointments(request):
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             appointment =  Appointment.objects.get(patient=patient, time = time)
             appointment.delete()
-            return Response(status.HTTP_204_NO_CONTENT)
+            return Response({"status":"success"})
 
         if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "appointment-update":
             time = parser.parse(request.data.get('time').replace('@', ' '))

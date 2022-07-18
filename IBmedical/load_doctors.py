@@ -56,3 +56,7 @@ from homepage.models import Doctor, DoctorInformation, Patient, Appointment
 # print(provider)
 
 
+time = parser.parse('2022-07-18, 02:46:36')
+patient = Patient.objects.get(first_name = "Richard", last_name = "Pearson")
+appointment = Appointment.objects.get(patient = patient, time = time )
+print(appointment)
