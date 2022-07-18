@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from nested_admin.nested import NestedStackedInline
 
 class AccountAdmin(UserAdmin):
-    list_display = ('email', "type_of_account", 'first_name', 'last_name', 'username', 'last_login', 'is_active','date_joined' )
+    list_display = ('first_name', 'last_name')
     filter_horizontal = ()
     list_filter = (["type_of_account"])
     fieldsets = ()
