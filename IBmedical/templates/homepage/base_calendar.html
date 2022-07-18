@@ -112,6 +112,7 @@ const sendOptions = {
           document.getElementById("watson_calendar").addEventListener("change", function() {
             updated_appointment_date = new Date ($("#watson_calendar").val()).toLocaleString('default', { month: 'long', hour12:true, year:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" })
             proxy_instance.send(sendObject, sendOptions)
+            $("#watson_calendar").remove();
       }
     )
         }

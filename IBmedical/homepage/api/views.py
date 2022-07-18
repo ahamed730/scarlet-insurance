@@ -84,14 +84,15 @@ def appointments(request):
             location = request.data.get('location')
             specialty = request.data.get('department')
             doctor = request.data.get('doctor')
-            doctor_first_name, doctor_last_name = doctor.split()[0], doctor.split()[1]
+            doctor_first_name, doctor_last_name = doctor.split()[1], doctor.split()[2]
             doctor = Doctor.objects.get(first_name=doctor_first_name, last_name=doctor_last_name)
             reason = request.data.get('reason_for_appointment')
             patient = Patient.objects.get(first_name = first_name, last_name = last_name)
             provider = DoctorInformation.objects.get(specialty=specialty, doctor=doctor, location=location)
             Appointment.objects.create(provider=provider, patient=patient, time=time, reason_for_appointment=reason)
             appointment = Appointment.objects.get(provider=provider, patient=patient, time=time)
-            return Response(status.HTTP_201_CREATED)
+            serializer = AppointmentSerializer(appointment)
+            return Response(serializer.data, status.HTTP_201_CREATED)
 
         if request.data.get('account_type') == 'Patient' and request.data.get('intent') == "locations":
             specialty = request.data.get('department')
