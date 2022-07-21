@@ -9,7 +9,6 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from dateutil import parser
-import humanize
 from datetime import datetime
 
 

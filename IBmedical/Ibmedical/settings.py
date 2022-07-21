@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-25t(0!cq8-j^k0^0emm$9z0ak0jb**1b4)z@tk#*cq%57_*%h1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['9d29-69-121-4-115.ngrok.io', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -85,8 +85,12 @@ WSGI_APPLICATION = 'Ibmedical.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'appointments', 
+        'USER': 'django', 
+        'HOST': '169.55.76.219', 
+        'PORT': '5432',
+        'PASSWORD': 'ibm1234'
     }
 }
 
